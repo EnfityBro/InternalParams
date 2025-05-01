@@ -154,8 +154,6 @@ public class InternalParams
         using (FileStream file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
         {
             file.SetLength(0);
-
-            if (new FileInfo(fileName).Attributes != FileAttributes.Hidden) { File.SetAttributes(fileName, FileAttributes.Hidden); }
         }
     }
 
@@ -349,7 +347,6 @@ public class InternalParams
 
         FileStream file = new FileStream(fileName, FileMode.OpenOrCreate);
         file.Close();
-        File.SetAttributes(fileName, FileAttributes.Hidden);
     }
 
     #endregion
@@ -366,6 +363,5 @@ Info:
   exception will occur when trying to get this value using its key.
   This exception will stop executing the block of code where it occurred.
   This exception will not affect the saved data and game process in any way.
-- The save file is marked with the "hidden" attribute in the OS.
 
 */
