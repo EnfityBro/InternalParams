@@ -299,7 +299,7 @@ public class InternalParams
 
         foreach (string line in lines)
         {
-            if (line.Contains(key) && line.Contains(type)) { return true; }
+            if ((line.Split(separator)[1] == key) && (line.Split(separator)[3] == type)) { return true; }
         }
 
         return false;
@@ -332,7 +332,7 @@ public class InternalParams
 
         foreach (string line in lines)
         {
-            if (line.Contains(key) && line.Contains(type)) { return lines.IndexOf(line); }
+            if ((line.Split(separator)[1] == key) && (line.Split(separator)[3] == type)) { return lines.IndexOf(line); }
         }
 
         return -1;
