@@ -1,10 +1,8 @@
-~~~ The Saving/Loading File System "InternalParams", Made By Enfity ~~~
+~~~ The Save/Load File System For Unity Games "InternalParams", Made By Enfity ~~~
 
 
 
 InternalParams is a class that saves game settings and values. It can store string, integer, float, boolean and UnityEngine.Vector3 values in the special file in the project folder.
-
-
 
 InternalParams public methods:
 - The "Set" type methods - sets a value identified by the given key for certain data type.
@@ -15,6 +13,7 @@ InternalParams public methods:
 - DeleteAllKeys - deletes all existing key-value pairs with the given key. If there are no such keys, it has no impact.
 - HasKey - returns true if the given key exists, otherwise returns false.
 - PairsCount - returns the number of all existing key-value pairs.
+- ChangeFileName - sets the name of the file in which the key-value pairs will be saved (Note: the default filename is InternalParams.enfity).
 
 
 
