@@ -8,12 +8,11 @@ using System.Linq;
 /// InternalParams is a class that saves game settings and values.
 /// It can store string, integer, float, boolean and UnityEngine.Vector3 values in the special file in the project folder.
 /// </summary>
-public class InternalParams
+public static class InternalParams
 {
     #region Variables
 
-    // for android projects: fileName = UnityEngine.Application.persistentDataPath + "/" + "InternalParams.enfity";
-    private const string fileName = "InternalParams.enfity";
+    private static string fileName = (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.Android) ? $"{UnityEngine.Application.persistentDataPath}/InternalParams.enfity" : "InternalParams.enfity";
     private const string separator = "|~-~|";
 
     #endregion
@@ -201,6 +200,14 @@ public class InternalParams
         return File.ReadAllLines(fileName).ToList().Count;
     }
 
+    /// <summary>
+    /// Sets the name of the file in which the key-value pairs will be saved (Note: the default filename is InternalParams.enfity).
+    /// </summary>
+    public static void ChangeFileName(string newFileName)
+    {
+        fileName = (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.Android) ? $"{UnityEngine.Application.persistentDataPath}/{newFileName}" : newFileName;
+    }
+
     #endregion
 
 
@@ -356,7 +363,7 @@ public class InternalParams
 
 /*
 
-Info:
+Note:
 - When trying to manually change the values in key-value pairs in a file,
   be careful: if you change the value in a key-value pair of a certain data
   type to a value intended for another data type, a data type conversion
