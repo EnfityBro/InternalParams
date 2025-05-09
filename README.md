@@ -1,4 +1,4 @@
-~~~ The Save/Load File System For Unity Games "InternalParams", Made By Enfity ~~~
+<b>The Save/Load File System For Unity Games "InternalParams", Made By Enfity</b>
 
 
 
@@ -17,9 +17,9 @@ InternalParams public methods:
 
 
 
-Contact me: enfity.games@gmail.com
-YouTube: https://www.youtube.com/@enfity
-Telegram: https://t.me/enfity_games
-Donation: https://www.donationalerts.com/r/enfity
-Itch.io: https://enfity.itch.io/
+Contact me: enfity.games@gmail.com<br>
+YouTube: https://www.youtube.com/@enfity<br>
+Telegram: https://t.me/enfity_games<br>
+Donation: https://www.donationalerts.com/r/enfity<br>
+Itch.io: https://enfity.itch.io/<br>
 GitHub: https://github.com/EnfityBro
