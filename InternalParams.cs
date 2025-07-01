@@ -203,7 +203,7 @@ public static class InternalParams
     /// <summary>
     /// Sets the name of the file in which the key-value pairs will be saved (Note: the default filename is InternalParams.enfity).
     /// </summary>
-    public static void ChangeFileName(string newFileName)
+    public static void SetFileName(string newFileName)
     {
         fileName = (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.Android) ? $"{UnityEngine.Application.persistentDataPath}/{newFileName}" : newFileName;
     }

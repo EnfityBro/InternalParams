@@ -13,7 +13,7 @@ InternalParams public methods:
 - DeleteAllKeys - deletes all existing key-value pairs with the given key. If there are no such keys, it has no impact.
 - HasKey - returns true if the given key exists, otherwise returns false.
 - PairsCount - returns the number of all existing key-value pairs.
-- ChangeFileName - sets the name of the file in which the key-value pairs will be saved (Note: the default filename is InternalParams.enfity).
+- SetFileName - sets the name of the file in which the key-value pairs will be saved (Note: the default filename is InternalParams.enfity).
 
 
 
