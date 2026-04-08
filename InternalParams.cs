@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 /// <summary>
@@ -21,6 +22,9 @@ public static class InternalParams
         ? $"{Application.persistentDataPath}/InternalParams.enfity"
         : "InternalParams.enfity";
 
+    /// <summary>
+    /// The separator that separates the data in the key-value pairs in the save file.
+    /// </summary>
     private const string separator = "|~-~|";
 
     /// <summary>
@@ -259,12 +263,49 @@ public static class InternalParams
     /// <summary>
     /// Sets the save file name in which the key-value pairs will be saved.
     /// Sets the name only for subsequent calls, useful when working with multiple save files.
+    /// Default save file name is InternalParams.enfity.
     /// </summary>
     public static void SetSaveFileName(string newSaveFileName)
     {
         SaveFileName = (Application.platform == RuntimePlatform.Android)
             ? $"{Application.persistentDataPath}/{newSaveFileName}"
             : newSaveFileName;
+    }
+
+    /// <summary>
+    /// Returns a list with all key-value pairs stored in the save file.
+    /// If there are no key-value pairs, it returns an empty list.
+    /// </summary>
+    /// <returns>A List with elements that consist of a Dictionary with a string key and a value with object data type.</returns>
+    public static List<Dictionary<string, object>> GetAllKeyValuePairs()
+    {
+        CheckOrCreateSaveFile();
+
+        List<Dictionary<string, object>> keyValuePairs = new List<Dictionary<string, object>>();
+
+        if (PairsCount() == 0)
+            return keyValuePairs;
+
+        List<string> lines = File.ReadAllLines(SaveFileName).ToList();
+
+        foreach (string line in lines)
+        {
+            if (!IsPairCorrupted(line.Split(separator)))
+            {
+                string key = line.Split(separator)[1];
+                object value = null;
+                DataTypes type = (DataTypes)Enum.Parse(typeof(DataTypes), line.Split(separator)[3]);
+
+                TryGetValue(key, ref value, type, line.Split(separator)[2]);
+                keyValuePairs.Add(
+                    new Dictionary<string, object>()
+                    {
+                        { key, value }
+                    });
+            }
+        }
+
+        return keyValuePairs;
     }
 
     #endregion
@@ -286,9 +327,16 @@ public static class InternalParams
         else
         {
             List<string> lines = File.ReadAllLines(SaveFileName).ToList();
+            DataTypes type = GetDataType(value);
 
             lines.Remove(lines[(int)lineIndex]);
-            lines.Add(separator + key + separator + $"{value}" + separator + GetDataType(value).ToString() + separator);
+
+            if (type == DataTypes.Float)
+                lines.Add(separator + key + separator + ((float)value).ToString(CultureInfo.InvariantCulture) + separator + GetDataType(value).ToString() + separator);
+            else if (type == DataTypes.Vector3)
+                lines.Add(separator + key + separator + ((Vector3)value).ToString("F7", CultureInfo.InvariantCulture) + separator + GetDataType(value).ToString() + separator);
+            else
+                lines.Add(separator + key + separator + $"{value}" + separator + GetDataType(value).ToString() + separator);
 
             File.WriteAllLines(SaveFileName, lines);
         }
@@ -331,80 +379,7 @@ public static class InternalParams
             List<string> lines = File.ReadAllLines(SaveFileName).ToList();
             string[] necessaryLine = lines[(int)lineIndex].Split(separator);
 
-            switch (type)
-            {
-                case DataTypes.String:
-                    value = necessaryLine[2];
-                    break;
-                case DataTypes.Int:
-                    {
-                        try
-                        {
-                            value = Convert.ToInt32(necessaryLine[2]);
-                        }
-                        catch (FormatException)
-                        {
-                            value = 0;
-
-                            DeleteKeyByType(key, type);
-                            Write(key, value);
-                        }
-
-                        break;
-                    }
-                case DataTypes.Float:
-                    {
-                        try
-                        {
-                            value = (float)Convert.ToDouble(necessaryLine[2]);
-                        }
-                        catch (FormatException)
-                        {
-                            value = 0.0f;
-
-                            DeleteKeyByType(key, type);
-                            Write(key, value);
-                        }
-
-                        break;
-                    }
-                case DataTypes.Bool:
-                    {
-                        if ((necessaryLine[2] == "True") || (necessaryLine[2] == "true"))
-                            value = true;
-                        else if ((necessaryLine[2] == "False") || (necessaryLine[2] == "false"))
-                            value = false;
-                        else
-                        {
-                            value = false;
-
-                            DeleteKeyByType(key, type);
-                            Write(key, value);
-                        }
-
-                        break;
-                    }
-                case DataTypes.Vector3:
-                    {
-                        try
-                        {
-                            string[] vectorLine = necessaryLine[2].Substring(1, necessaryLine[2].Length - 2).Split(", ");
-
-                            value = new Vector3((float)Convert.ToDouble(vectorLine[0].Replace('.', ',')),
-                                (float)Convert.ToDouble(vectorLine[1].Replace('.', ',')),
-                                (float)Convert.ToDouble(vectorLine[2].Replace('.', ',')));
-                        }
-                        catch (FormatException)
-                        {
-                            value = Vector3.zero;
-
-                            DeleteKeyByType(key, type);
-                            Write(key, value);
-                        }
-
-                        break;
-                    }
-            }
+            TryGetValue(key, ref value, type, necessaryLine[2]);
         }
 
         return value;
@@ -496,8 +471,16 @@ public static class InternalParams
     {
         FileStream file = new FileStream(SaveFileName, FileMode.OpenOrCreate, FileAccess.Write);
 
+        DataTypes type = GetDataType(value);
         byte[] keyArray = Encoding.Default.GetBytes(separator + key + separator);
-        byte[] valueArray = Encoding.Default.GetBytes($"{value}" + separator + GetDataType(value).ToString() + separator + "\n");
+        byte[] valueArray;
+
+        if (type == DataTypes.Float)
+            valueArray = Encoding.Default.GetBytes(((float)value).ToString(CultureInfo.InvariantCulture) + separator + type.ToString() + separator + "\n");
+        else if (type == DataTypes.Vector3)
+            valueArray = Encoding.Default.GetBytes(((Vector3)value).ToString("F7", CultureInfo.InvariantCulture) + separator + type.ToString() + separator + "\n");
+        else
+            valueArray = Encoding.Default.GetBytes($"{value}" + separator + type.ToString() + separator + "\n");
 
         file.Seek(0, SeekOrigin.End);
         file.Write(keyArray, 0, keyArray.Length);
@@ -530,7 +513,8 @@ public static class InternalParams
     }
 
     /// <summary>
-    /// Returns false if the given key-value pair is not corrupted, otherwise returns true.
+    /// Returns true if the given key-value pair is corrupted, otherwise returns false.
+    /// Ensures that the key-value pair length is correct and that the data type is found in the pair.
     /// </summary>
     private static bool IsPairCorrupted(string[] pair)
     {
@@ -549,6 +533,91 @@ public static class InternalParams
             return true;
     }
 
+    /// <summary>
+    /// Returns the value of a specific data type corresponding to key.
+    /// If the value is corrupted, then the pair with this value is replaced with a pair with the default value for the data type of this pair.
+    /// </summary>
+    private static void TryGetValue(string key, ref object value, DataTypes type, string inputValue)
+    {
+        switch (type)
+        {
+            case DataTypes.String:
+                {
+                    value = inputValue;
+                    break;
+                }
+            case DataTypes.Int:
+                {
+                    try
+                    {
+                        value = Convert.ToInt32(inputValue);
+                    }
+                    catch (FormatException)
+                    {
+                        value = 0;
+
+                        DeleteKeyByType(key, type);
+                        Write(key, value);
+                    }
+
+                    break;
+                }
+            case DataTypes.Float:
+                {
+                    try
+                    {
+                        value = float.Parse(inputValue, CultureInfo.InvariantCulture);
+                    }
+                    catch (Exception)
+                    {
+                        value = 0.0f;
+
+                        DeleteKeyByType(key, type);
+                        Write(key, value);
+                    }
+
+                    break;
+                }
+            case DataTypes.Bool:
+                {
+                    if ((inputValue == "True") || (inputValue == "true"))
+                        value = true;
+                    else if ((inputValue == "False") || (inputValue == "false"))
+                        value = false;
+                    else
+                    {
+                        value = false;
+
+                        DeleteKeyByType(key, type);
+                        Write(key, value);
+                    }
+
+                    break;
+                }
+            case DataTypes.Vector3:
+                {
+                    try
+                    {
+                        string[] vectorLine = inputValue.Substring(1, inputValue.Length - 2).Split(", ");
+
+                        value = new Vector3(
+                            float.Parse(vectorLine[0], CultureInfo.InvariantCulture),
+                            float.Parse(vectorLine[1], CultureInfo.InvariantCulture),
+                            float.Parse(vectorLine[2], CultureInfo.InvariantCulture));
+                    }
+                    catch (Exception)
+                    {
+                        value = Vector3.zero;
+
+                        DeleteKeyByType(key, type);
+                        Write(key, value);
+                    }
+
+                    break;
+                }
+        }
+    }
+
     #endregion
 }
 
@@ -556,8 +625,9 @@ public static class InternalParams
 
 /*
 
-Version 7 (Latest version as of February 18, 2026)
+Version 8 (Latest version as of April 8, 2026)
+GitHub: https://github.com/EnfityBro/InternalParams
 
-Note: it is recommended not to damage the save file contents manually to avoid losing the saved data.
+Note: it is recommended not to damage the save file contents manually to avoid possible loss of saved data.
 
 */
