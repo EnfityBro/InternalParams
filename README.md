@@ -10,7 +10,7 @@
 - Guaranteed to work on **PC** and **Android** (including Meta Quest 2/3). 
 - Has a **protection** system **against manual corruption** of the save file. 
   <details>
-    <summary>Click to see details about this system</summary>
+    <summary>About this system</summary>
     
     - a **completely corrupted save file** without separators **does not causes bugs** in the InternalParams operation; 
     - **extraneous lines** are **ignored** by the InternalParams; 
@@ -21,7 +21,7 @@
     - when **null values** are passed to methods, their operation **has no effect** and stops prematurely (it also **returns the default value or false** in the case of **non-void methods**). 
   </details>
 - The **protection** system **against manual corruption** of the save file **has logging** with 'Debug.LogWarning()'. 
-- The **protection** system **against manual corruption** of the save file** has an impact only** if the save file **content is intentionally manually corrupted**. 
+- The **protection** system **against manual corruption** of the save file **has an impact only** if the save file **content is intentionally manually corrupted**. 
 
 ## InternalParams recommendations
 - It is recommended **not to damage the save file contents manually** to avoid possible loss of saved data. 
