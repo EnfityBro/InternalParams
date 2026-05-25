@@ -1,9 +1,9 @@
 using System;
-using System.IO;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace Enfity.SaveAndLoad
@@ -13,33 +13,8 @@ namespace Enfity.SaveAndLoad
     /// It can store string, integer, float, boolean and Vector3 values in the special save file in the project folder.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// Features:<br/>
-    /// Can save data with the same key name, but in different data types.<br/>
-    /// Guaranteed to work on PC and Android (including Meta Quest 2/3).<br/>
-    /// Has a protection system against manual corruption of the save file:<br/>
-    /// - a completely corrupted save file without separators does not causes bugs in the InternalParams operation;<br/>
-    /// - extraneous lines are ignored by the InternalParams;<br/>
-    /// - a corrupted key-value pair is perceived as missing from the save file and ignored by the InternalParams;<br/>
-    /// - in the case of a duplicated key-value pair, the first such pair is used in the methods operation;<br/>
-    /// - if there is a corrupted value in the key-value pair, then this pair is replaced with a pair with the default value for the data type of this pair;<br/>
-    /// - a key-value pair with a corrupted data type is perceived as missing from the save file and ignored by the InternalParams;<br/>
-    /// - when null values are passed to methods, their operation has no effect and stops prematurely (it also returns the default value or false in the case of non-void methods).<br/>
-    /// The protection system against manual corruption of the save file has logging with 'Debug.LogWarning()'.<br/>
-    /// The protection system against manual corruption of the save file has an impact only if the save file content is intentionally manually corrupted.
-    /// </para>
-    /// <para>
-    /// Recommendations:<br/>
-    /// It is recommended not to damage the save file contents manually to avoid possible loss of saved data.<br/>
-    /// It is recommended not to touch the separators in the save file, and also not to copy key-value pairs because:<br/>
-    /// - InternalParams uses special system control characters which are not displayed in the clipboard;<br/>
-    /// - if you try to manually copy one pair and paste it into the save file, InternalParams will ignore it.
-    /// </para>
-    /// <para>
-    /// Notes:<br/>
-    /// Version 9 (Latest version as of April 12, 2026)<br/>
-    /// GitHub: https://github.com/EnfityBro/InternalParams
-    /// </para>
+    /// Version 10 (Latest version as of May 25, 2026)<br/>
+    /// Details on GitHub: https://github.com/EnfityBro/InternalParams
     /// </remarks>
     public static class InternalParams
     {
@@ -95,13 +70,27 @@ namespace Enfity.SaveAndLoad
         /// Returns the string value corresponding to key if it exists.<br/>
         /// If it does not exist, it returns empty string.
         /// </summary>
-        public static string GetString(string key) => (string)GetValue(key, DataTypes.String, false);
+        public static string GetString(string key) => (string)GetValue(key, DataTypes.String);
 
         /// <summary>
         /// Returns the string value corresponding to key if it exists.<br/>
-        /// If it does not exist, it creates a key-value pair if createIfMissing parameter is true, and returns empty string.
+        /// If it does not exist, it returns the passed value of the 'defaultValue' parameter.
         /// </summary>
-        public static string GetString(string key, bool createIfMissing) => (string)GetValue(key, DataTypes.String, createIfMissing);
+        public static string GetString(string key, string defaultValue) => (string)GetValue(key, DataTypes.String, defaultValue ?? "");
+
+        /// <summary>
+        /// Returns the string value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with empty string value if createIfMissing parameter is true,<br/>
+        /// and returns empty string.
+        /// </summary>
+        public static string GetString(string key, bool createIfMissing) => (string)GetValue(key, DataTypes.String, createIfMissing: createIfMissing);
+
+        /// <summary>
+        /// Returns the string value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with empty string value if createIfMissing parameter is true,<br/>
+        /// and returns the passed value of the 'defaultValue' parameter.
+        /// </summary>
+        public static string GetString(string key, string defaultValue, bool createIfMissing) => (string)GetValue(key, DataTypes.String, defaultValue ?? "", createIfMissing);
 
         /// <summary>
         /// Returns true if the given key with string value exists, otherwise returns false.
@@ -128,13 +117,27 @@ namespace Enfity.SaveAndLoad
         /// Returns the integer value corresponding to key if it exists.<br/>
         /// If it does not exist, it returns 0.
         /// </summary>
-        public static int GetInt(string key) => (int)GetValue(key, DataTypes.Int, false);
+        public static int GetInt(string key) => (int)GetValue(key, DataTypes.Int);
 
         /// <summary>
         /// Returns the integer value corresponding to key if it exists.<br/>
-        /// If it does not exist, it creates a key-value pair if createIfMissing parameter is true, and returns 0.
+        /// If it does not exist, it returns the passed value of the 'defaultValue' parameter.
         /// </summary>
-        public static int GetInt(string key, bool createIfMissing) => (int)GetValue(key, DataTypes.Int, createIfMissing);
+        public static int GetInt(string key, int defaultValue) => (int)GetValue(key, DataTypes.Int, defaultValue);
+
+        /// <summary>
+        /// Returns the integer value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with 0 value if createIfMissing parameter is true,<br/>
+        /// and returns 0.
+        /// </summary>
+        public static int GetInt(string key, bool createIfMissing) => (int)GetValue(key, DataTypes.Int, createIfMissing: createIfMissing);
+
+        /// <summary>
+        /// Returns the integer value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with 0 value if createIfMissing parameter is true,<br/>
+        /// and returns the passed value of the 'defaultValue' parameter.
+        /// </summary>
+        public static int GetInt(string key, int defaultValue, bool createIfMissing) => (int)GetValue(key, DataTypes.Int, defaultValue, createIfMissing);
 
         /// <summary>
         /// Returns true if the given key with integer value exists, otherwise returns false.
@@ -161,13 +164,27 @@ namespace Enfity.SaveAndLoad
         /// Returns the float value corresponding to key if it exists.<br/>
         /// If it does not exist, it returns 0.0f.
         /// </summary>
-        public static float GetFloat(string key) => (float)GetValue(key, DataTypes.Float, false);
+        public static float GetFloat(string key) => (float)GetValue(key, DataTypes.Float);
 
         /// <summary>
         /// Returns the float value corresponding to key if it exists.<br/>
-        /// If it does not exist, it creates a key-value pair if createIfMissing parameter is true, and returns 0.0f.
+        /// If it does not exist, it returns the passed value of the 'defaultValue' parameter.
         /// </summary>
-        public static float GetFloat(string key, bool createIfMissing) => (float)GetValue(key, DataTypes.Float, createIfMissing);
+        public static float GetFloat(string key, float defaultValue) => (float)GetValue(key, DataTypes.Float, defaultValue);
+
+        /// <summary>
+        /// Returns the float value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with 0.0f value if createIfMissing parameter is true,<br/>
+        /// and returns 0.0f.
+        /// </summary>
+        public static float GetFloat(string key, bool createIfMissing) => (float)GetValue(key, DataTypes.Float, createIfMissing: createIfMissing);
+
+        /// <summary>
+        /// Returns the float value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with 0.0f value if createIfMissing parameter is true,<br/>
+        /// and returns the passed value of the 'defaultValue' parameter.
+        /// </summary>s>
+        public static float GetFloat(string key, float defaultValue, bool createIfMissing) => (float)GetValue(key, DataTypes.Float, defaultValue, createIfMissing);
 
         /// <summary>
         /// Returns true if the given key with float value exists, otherwise returns false.
@@ -194,13 +211,27 @@ namespace Enfity.SaveAndLoad
         /// Returns the boolean value corresponding to key if it exists.<br/>
         /// If it does not exist, it returns false.
         /// </summary>
-        public static bool GetBool(string key) => (bool)GetValue(key, DataTypes.Bool, false);
+        public static bool GetBool(string key) => (bool)GetValue(key, DataTypes.Bool);
 
         /// <summary>
         /// Returns the boolean value corresponding to key if it exists.<br/>
-        /// If it does not exist, it creates a key-value pair if createIfMissing parameter is true, and returns false.
+        /// If it does not exist, it returns the passed value of the 'defaultValue' parameter.
         /// </summary>
-        public static bool GetBool(string key, bool createIfMissing) => (bool)GetValue(key, DataTypes.Bool, createIfMissing);
+        public static bool GetBoolWithDefault(string key, bool defaultValue) => (bool)GetValue(key, DataTypes.Bool, defaultValue);
+
+        /// <summary>
+        /// Returns the boolean value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with false value if createIfMissing parameter is true,<br/>
+        /// and returns false.
+        /// </summary>
+        public static bool GetBool(string key, bool createIfMissing) => (bool)GetValue(key, DataTypes.Bool, createIfMissing: createIfMissing);
+
+        /// <summary>
+        /// Returns the boolean value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with false value if createIfMissing parameter is true,<br/>
+        /// and returns the passed value of the 'defaultValue' parameter.
+        /// </summary>
+        public static bool GetBoolWithDefault(string key, bool defaultValue, bool createIfMissing) => (bool)GetValue(key, DataTypes.Bool, defaultValue, createIfMissing);
 
         /// <summary>
         /// Returns true if the given key with boolean value exists, otherwise returns false.
@@ -227,13 +258,27 @@ namespace Enfity.SaveAndLoad
         /// Returns the Vector3 value corresponding to key if it exists.<br/>
         /// If it does not exist, it returns Vector3.zero.
         /// </summary>
-        public static Vector3 GetVector3(string key) => (Vector3)GetValue(key, DataTypes.Vector3, false);
+        public static Vector3 GetVector3(string key) => (Vector3)GetValue(key, DataTypes.Vector3);
 
         /// <summary>
         /// Returns the Vector3 value corresponding to key if it exists.<br/>
-        /// If it does not exist, it creates a key-value pair if createIfMissing parameter is true, and returns Vector3.zero.
+        /// If it does not exist, it returns the passed value of the 'defaultValue' parameter.
         /// </summary>
-        public static Vector3 GetVector3(string key, bool createIfMissing) => (Vector3)GetValue(key, DataTypes.Vector3, createIfMissing);
+        public static Vector3 GetVector3(string key, Vector3 defaultValue) => (Vector3)GetValue(key, DataTypes.Vector3, defaultValue);
+
+        /// <summary>
+        /// Returns the Vector3 value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with Vector3.zero value if createIfMissing parameter is true,<br/>
+        /// and returns Vector3.zero.
+        /// </summary>
+        public static Vector3 GetVector3(string key, bool createIfMissing) => (Vector3)GetValue(key, DataTypes.Vector3, createIfMissing: createIfMissing);
+
+        /// <summary>
+        /// Returns the Vector3 value corresponding to key if it exists.<br/>
+        /// If it does not exist, it creates a key-value pair with Vector3.zero value if createIfMissing parameter is true,<br/>
+        /// and returns the passed value of the 'defaultValue' parameter.
+        /// </summary>
+        public static Vector3 GetVector3(string key, Vector3 defaultValue, bool createIfMissing) => (Vector3)GetValue(key, DataTypes.Vector3, defaultValue, createIfMissing);
 
         /// <summary>
         /// Returns true if the given key with Vector3 value exists, otherwise returns false.
@@ -467,7 +512,7 @@ namespace Enfity.SaveAndLoad
         /// Returns the value of a specific data type corresponding to key if it exists.<br/>
         /// If it does not exist, it creates a key-value pair with corresponding data type if createIfMissing parameter is true, and returns default value for this data type.
         /// </summary>
-        private static object GetValue(string key, DataTypes type, bool createIfMissing)
+        private static object GetValue(string key, DataTypes type, object defaultValue = null, bool createIfMissing = false)
         {
             object value = null;
 
@@ -489,6 +534,9 @@ namespace Enfity.SaveAndLoad
 
                 if (createIfMissing)
                     Write(key, value);
+
+                if (defaultValue != null)
+                    value = defaultValue;
             }
             else
             {
