@@ -1,11 +1,23 @@
-# Internal Params - The Save/Load File System For Unity Games Made By Enfity
+# Internal Params - The Powerful Save/Load File System For Unity Games
 
 > [!NOTE]
 > - **InternalParams** is a class that saves game settings and values as key-value pairs. 
-> - It can store **string**, **integer**, **float**, **boolean** and **Vector3** values in the special save file in the project folder. 
+>   <br>It can store **string**, **integer**, **float**, **boolean** and **Vector3** values in the special save file in the project folder. 
 > - The class is located in the 'Enfity.SaveAndLoad' namespace. 
+> - **InternalParams** is an **advanced** and **improved** analog of Unity's PlayerPrefs. 
 
-## InternalParams features
+## Summary
+- [Features](#features)
+- [Public properties](#public-properties)
+- [Public methods](#public-methods)
+- [How to use](#how-to-use)
+- [Recommendations for use](#recommendations-for-use)
+- [Installation](#installation)
+- [Compatibility](#compatibility)
+- [Latest version](#latest-version)
+- [Contact me](#contact-me)
+
+## Features
 - Can save data with the **same key name**, but in **different data types**. 
 - Guaranteed to work on **PC** and **Android** (including Meta Quest 2/3). 
 - Has a **protection** system **against manual corruption** of the save file. 
@@ -26,84 +38,282 @@
 - Works with **float** values for **different regions**. 
 - Supports working with **multiple save files**. 
 
-## InternalParams recommendations
+## Public properties
+<table>
+  <tr>
+    <td><b>SaveFileName</b></td>
+    <td>the name of the save file in which the key-value pairs are stored. Default save file name is 'InternalParams.enfity'</td>
+  </tr>
+</table>
+
+## Public methods
+<details>
+  <summary>String Methods</summary>
+
+  <table>
+    <tr>
+      <td><b>void SetString(string key, string value)</b></td>
+      <td>sets a string value identified by the given key</td>
+    </tr>
+    <tr>
+      <td><b>string GetString(string key)</b></td>
+      <td>returns the string value corresponding to key if it exists. If it does not exist, it returns empty string</td>
+    </tr>
+    <tr>
+      <td><b>string GetString(string key, string defaultValue)</b></td>
+      <td>returns the string value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>string GetString(string key, bool createIfMissing)</b></td>
+      <td>returns the string value corresponding to key if it exists. If it does not exist, it creates a key-value pair with empty string value if createIfMissing parameter is true, and returns empty string</td>
+    </tr>
+    <tr>
+      <td><b>string GetString(string key, string defaultValue, bool createIfMissing)</b></td>
+      <td>returns the string value corresponding to key if it exists. If it does not exist, it creates a key-value pair with empty string value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>bool HasKeyString(string key)</b></td>
+      <td>returns true if the given key with string value exists, otherwise returns false</td>
+    </tr>
+    <tr>
+      <td><b>void DeleteKeyString(string key)</b></td>
+      <td>removes the given key with string value. If no such key exists, DeleteKeyString has no impact</td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>Int Methods</summary>
+
+  <table>
+    <tr>
+      <td><b>void SetInt(string key, int value)</b></td>
+      <td>sets an integer value identified by the given key</td>
+    </tr>
+    <tr>
+      <td><b>int GetInt(string key)</b></td>
+      <td>returns the integer value corresponding to key if it exists. If it does not exist, it returns 0</td>
+    </tr>
+    <tr>
+      <td><b>int GetInt(string key, int defaultValue)</b></td>
+      <td>returns the integer value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>int GetInt(string key, bool createIfMissing)</b></td>
+      <td>returns the integer value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0 value if createIfMissing parameter is true, and returns 0</td>
+    </tr>
+    <tr>
+      <td><b>int GetInt(string key, int defaultValue, bool createIfMissing)</b></td>
+      <td>returns the integer value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0 value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>bool HasKeyInt(string key)</b></td>
+      <td>returns true if the given key with integer value exists, otherwise returns false</td>
+    </tr>
+    <tr>
+      <td><b>void DeleteKeyInt(string key)</b></td>
+      <td>removes the given key with integer value. If no such key exists, DeleteKeyInt has no impact</td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>Float Methods</summary>
+  
+  <table>
+    <tr>
+      <td><b>void SetFloat(string key, float value)</b></td>
+      <td>sets a float value identified by the given key</td>
+    </tr>
+    <tr>
+      <td><b>float GetFloat(string key)</b></td>
+      <td>returns the float value corresponding to key if it exists. If it does not exist, it returns 0.0f</td>
+    </tr>
+    <tr>
+      <td><b>float GetFloat(string key, float defaultValue)</b></td>
+      <td>returns the float value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>float GetFloat(string key, bool createIfMissing)</b></td>
+      <td>returns the float value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0.0f value if createIfMissing parameter is true, and returns 0.0f</td>
+    </tr>
+    <tr>
+      <td><b>float GetFloat(string key, float defaultValue, bool createIfMissing)</b></td>
+      <td>returns the float value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0.0f value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>bool HasKeyFloat(string key)</b></td>
+      <td>returns true if the given key with float value exists, otherwise returns false</td>
+    </tr>
+    <tr>
+      <td><b>void DeleteKeyFloat(string key)</b></td>
+      <td>removes the given key with float value. If no such key exists, DeleteKeyFloat has no impact</td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>Bool Methods</summary>
+
+  <table>
+    <tr>
+      <td><b>void SetBool(string key, bool value)</b></td>
+      <td>sets a boolean value identified by the given key</td>
+    </tr>
+    <tr>
+      <td><b>bool GetBool(string key)</b></td>
+      <td>returns the boolean value corresponding to key if it exists. If it does not exist, it returns false</td>
+    </tr>
+    <tr>
+      <td><b>bool GetBoolWithDefault(string key, bool defaultValue)</b></td>
+      <td>returns the boolean value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>bool GetBool(string key, bool createIfMissing)</b></td>
+      <td>returns the boolean value corresponding to key if it exists. If it does not exist, it creates a key-value pair with false value if createIfMissing parameter is true, and returns false</td>
+    </tr>
+    <tr>
+      <td><b>bool GetBoolWithDefault(string key, bool defaultValue, bool createIfMissing)</b></td>
+      <td>returns the boolean value corresponding to key if it exists. If it does not exist, it creates a key-value pair with false value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>bool HasKeyBool(string key)</b></td>
+      <td>returns true if the given key with boolean value exists, otherwise returns false</td>
+    </tr>
+    <tr>
+      <td><b>void DeleteKeyBool(string key)</b></td>
+      <td>removes the given key with boolean value. If no such key exists, DeleteKeyBool has no impact</td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>Vector3 Methods</summary>
+
+  <table>
+    <tr>
+      <td><b>void SetVector3(string key, Vector3 value)</b></td>
+      <td>sets a Vector3 value identified by the given key</td>
+    </tr>
+    <tr>
+      <td><b>Vector3 GetVector3(string key)</b></td>
+      <td>returns the Vector3 value corresponding to key if it exists. If it does not exist, it returns Vector3.zero</td>
+    </tr>
+    <tr>
+      <td><b>Vector3 GetVector3(string key, Vector3 defaultValue)</b></td>
+      <td>returns the Vector3 value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>Vector3 GetVector3(string key, bool createIfMissing)</b></td>
+      <td>returns the Vector3 value corresponding to key if it exists. If it does not exist, it creates a key-value pair with Vector3.zero value if createIfMissing parameter is true, and returns Vector3.zero</td>
+    </tr>
+    <tr>
+      <td><b>Vector3 GetVector3(string key, Vector3 defaultValue, bool createIfMissing)</b></td>
+      <td>returns the Vector3 value corresponding to key if it exists. If it does not exist, it creates a key-value pair with Vector3.zero value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter</td>
+    </tr>
+    <tr>
+      <td><b>bool HasKeyVector3(string key)</b></td>
+      <td>returns true if the given key with Vector3 value exists, otherwise returns false</td>
+    </tr>
+    <tr>
+      <td><b>void DeleteKeyVector3(string key)</b></td>
+      <td>removes the given key with Vector3 value. If no such key exists, DeleteKeyVector3 has no impact</td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>General Methods</summary>
+
+  <table>
+    <tr>
+      <td><b>void DeleteAll()</b></td>
+      <td>deletes all existing keys and values. If there are no key-value pairs, then DeleteAll will has no impact</td>
+    </tr>
+    <tr>
+      <td><b>void DeleteAllKeys(string key)</b></td>
+      <td>deletes all existing key-value pairs with the given key. If there are no such keys it has no impact</td>
+    </tr>
+    <tr>
+      <td><b>bool HasKey(string key)</b></td>
+      <td>returns true if the given key exists, otherwise returns false</td>
+    </tr>
+    <tr>
+      <td><b>int PairsCount()</b></td>
+      <td>returns the number of all existing key-value pairs</td>
+    </tr>
+    <tr>
+      <td><b>void SetSaveFileName(string newSaveFileName)</b></td>
+      <td>sets (for subsequent calls) the save file name in which the key-value pairs will be saved. Sets the name only for subsequent calls, useful when working with multiple save files. Default save file name is 'InternalParams.enfity'</td>
+    </tr>
+    <tr>
+      <td><b>List&lt;KeyValuePair&lt;string, object&gt;&gt; GetAllKeyValuePairs()</b></td>
+      <td>returns a list (with elements that consist of a KeyValuePair with a string key and a value with object data type) with all key-value pairs stored in the save file. If there are no key-value pairs, it returns an empty list</td>
+    </tr>
+  </table>
+</details>
+
+## How to use
+<details>
+  <summary>Saving and retrieving values</summary>
+
+  ```csharp
+  InternalParams.SetFloat("PlayerHP", 100.0f);
+  InternalParams.SetString("PlayerHP", InternalParams.GetFloat("PlayerHP").ToString());
+
+  InternalParams.SetBool("IsAlive", true);
+
+  InternalParams.SetVector3("PlayerPosition", transform.position);
+  InternalParams.SetVector3("PlayerRotation", transform.rotation.eulerAngles);
+
+  int currentLevelId = InternalParams.GetInt("CurrentLevelId", 1, true);
+  float hp = InternalParams.GetFloat("PlayerHP");
+  string currentName = InternalParams.GetString("Name", "DefaultName");
+  ```
+</details>
+<details>
+  <summary>Key-value pairs manipulations</summary>
+
+  ```csharp
+  InternalParams.DeleteAllKeys("PlayerHP");
+  InternalParams.DeleteKeyBool("IsAlive");
+
+  bool hasPosition = InternalParams.HasKey("PlayerPosition");
+  bool hasRotation = InternalParams.HasKeyVector3("PlayerRotation");
+
+  InternalParams.DeleteAll();
+  ```
+</details>
+<details>
+  <summary>Save file manipulations</summary>
+
+  ```csharp
+  InternalParams.SetSaveFileName("GameProgress.save");
+
+  for (int i = 0; i < 10; i++)
+  {
+    InternalParams.SetInt($"GameStage_{i}", i);
+  }
+
+  int gameProgressPairsCount = InternalParams.PairsCount();
+
+  InternalParams.SetSaveFileName("GameSettings.save");
+  int gameSettingsPairsCount = InternalParams.PairsCount();
+  ```
+</details>
+
+## Recommendations for use
 - It is recommended **not to damage the save file contents manually** to avoid possible loss of saved data. 
 - It is recommended **not to touch the separators in the save file**, and also not to copy key-value pairs because: 
   - InternalParams uses special system control characters which are not displayed in the clipboard; 
   - if you try to manually copy one pair and paste it into the save file, InternalParams will ignore it. 
 
-## InternalParams public properties
-- **SaveFileName** - the name of the save file in which the key-value pairs are stored. Default save file name is 'InternalParams.enfity'. 
+## Installation
+1. Download actual **InternalParams.cs file** from [releases](https://github.com/EnfityBro/InternalParams/releases).
+2. Add the downloaded code to your Unity project.
 
-## InternalParams public methods
-<details>
-  <summary>String Methods</summary>
-  
-  - **void SetString(string key, string value)** - sets a string value identified by the given key. 
-  - **string GetString(string key)** - returns the string value corresponding to key if it exists. If it does not exist, it returns empty string. 
-  - **string GetString(string key, string defaultValue)** - returns the string value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter. 
-  - **string GetString(string key, bool createIfMissing)** - returns the string value corresponding to key if it exists. If it does not exist, it creates a key-value pair with empty string value if createIfMissing parameter is true, and returns empty string. 
-  - **string GetString(string key, string defaultValue, bool createIfMissing)** - returns the string value corresponding to key if it exists. If it does not exist, it creates a key-value pair with empty string value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter. 
-  - **bool HasKeyString(string key)** - returns true if the given key with string value exists, otherwise returns false. 
-  - **void DeleteKeyString(string key)** - removes the given key with string value. If no such key exists, DeleteKeyString has no impact. 
-</details>
-<details>
-  <summary>Int Methods</summary>
-  
-  - **void SetInt(string key, int value)** - sets an integer value identified by the given key. 
-  - **int GetInt(string key)** - returns the integer value corresponding to key if it exists. If it does not exist, it returns 0. 
-  - **int GetInt(string key, int defaultValue)** - returns the integer value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter. 
-  - **int GetInt(string key, bool createIfMissing)** - returns the integer value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0 value if createIfMissing parameter is true, and returns 0. 
-  - **int GetInt(string key, int defaultValue, bool createIfMissing)** - returns the integer value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0 value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter. 
-  - **bool HasKeyInt(string key)** - returns true if the given key with integer value exists, otherwise returns false. 
-  - **void DeleteKeyInt(string key)** - removes the given key with integer value. If no such key exists, DeleteKeyInt has no impact. 
-</details>
-<details>
-  <summary>Float Methods</summary>
-  
-  - **void SetFloat(string key, float value)** - sets a float value identified by the given key. 
-  - **float GetFloat(string key)** - returns the float value corresponding to key if it exists. If it does not exist, it returns 0.0f. 
-  - **float GetFloat(string key, float defaultValue)** - returns the float value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter. 
-  - **float GetFloat(string key, bool createIfMissing)** - returns the float value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0.0f value if createIfMissing parameter is true, and returns 0.0f. 
-  - **float GetFloat(string key, float defaultValue, bool createIfMissing)** - returns the float value corresponding to key if it exists. If it does not exist, it creates a key-value pair with 0.0f value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter. 
-  - **bool HasKeyFloat(string key)** - returns true if the given key with float value exists, otherwise returns false. 
-  - **void DeleteKeyFloat(string key)** - removes the given key with float value. If no such key exists, DeleteKeyFloat has no impact. 
-</details>
-<details>
-  <summary>Bool Methods</summary>
-  
-  - **void SetBool(string key, bool value)** - sets a boolean value identified by the given key. 
-  - **bool GetBool(string key)** - returns the boolean value corresponding to key if it exists. If it does not exist, it returns false. 
-  - **bool GetBoolWithDefault(string key, bool defaultValue)** - returns the boolean value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter. 
-  - **bool GetBool(string key, bool createIfMissing)** - returns the boolean value corresponding to key if it exists. If it does not exist, it creates a key-value pair with false value if createIfMissing parameter is true, and returns false. 
-  - **bool GetBoolWithDefault(string key, bool defaultValue, bool createIfMissing)** - returns the boolean value corresponding to key if it exists. If it does not exist, it creates a key-value pair with false value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter. 
-  - **bool HasKeyBool(string key)** - returns true if the given key with boolean value exists, otherwise returns false. 
-  - **void DeleteKeyBool(string key)** - removes the given key with boolean value. If no such key exists, DeleteKeyBool has no impact. 
-</details>
-<details>
-  <summary>Vector3 Methods</summary>
-  
-  - **void SetVector3(string key, Vector3 value)** - sets a Vector3 value identified by the given key. 
-  - **Vector3 GetVector3(string key)** - returns the Vector3 value corresponding to key if it exists. If it does not exist, it returns Vector3.zero. 
-  - **Vector3 GetVector3(string key, Vector3 defaultValue)** - returns the Vector3 value corresponding to key if it exists. If it does not exist, it returns the passed value of the 'defaultValue' parameter. 
-  - **Vector3 GetVector3(string key, bool createIfMissing)** - returns the Vector3 value corresponding to key if it exists. If it does not exist, it creates a key-value pair with Vector3.zero value if createIfMissing parameter is true, and returns Vector3.zero. 
-  - **Vector3 GetVector3(string key, Vector3 defaultValue, bool createIfMissing)** - returns the Vector3 value corresponding to key if it exists. If it does not exist, it creates a key-value pair with Vector3.zero value if createIfMissing parameter is true, and returns the passed value of the 'defaultValue' parameter. 
-  - **bool HasKeyVector3(string key)** - returns true if the given key with Vector3 value exists, otherwise returns false. 
-  - **void DeleteKeyVector3(string key)**- removes the given key with Vector3 value. If no such key exists, DeleteKeyVector3 has no impact. 
-</details>
-<details>
-  <summary>Other Methods</summary>
-  
-  - **void DeleteAll()** - deletes all existing keys and values. If there are no key-value pairs, then DeleteAll will has no impact. 
-  - **void DeleteAllKeys(string key)** - deletes all existing key-value pairs with the given key. If there are no such keys it has no impact. 
-  - **bool HasKey(string key)** - returns true if the given key exists, otherwise returns false. 
-  - **int PairsCount()** - returns the number of all existing key-value pairs. 
-  - **void SetSaveFileName(string newSaveFileName)** - sets (for subsequent calls) the save file name in which the key-value pairs will be saved. Sets the name only for subsequent calls, useful when working with multiple save files. Default save file name is 'InternalParams.enfity'. 
-  - **List<KeyValuePair<string, object>> GetAllKeyValuePairs()** - returns a list (with elements that consist of a KeyValuePair with a string key and a value with object data type) with all key-value pairs stored in the save file. If there are no key-value pairs, it returns an empty list. 
-</details>
+## Compatibility
+- InternalParams older than version 9 are not compatible with new versions. 
+- InternalParams works on all Unity versions. 
+- Unity's PlayerPrefs can be completely replaced by using InternalParams. 
 
 ## Latest version
-Version **10** (May 25, 2026)
+Version **11** (July 11, 2026)
 
 ## Contact me
 - [Telegram Channel](https://t.me/enfity_games) 

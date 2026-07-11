@@ -13,12 +13,12 @@ namespace Enfity.SaveAndLoad
     /// It can store string, integer, float, boolean and Vector3 values in the special save file in the project folder.
     /// </summary>
     /// <remarks>
-    /// Version 10 (Latest version as of May 25, 2026)<br/>
+    /// Version 11 (Latest version as of July 11, 2026)<br/>
     /// Details on GitHub: https://github.com/EnfityBro/InternalParams
     /// </remarks>
     public static class InternalParams
     {
-        #region Properties, Fields, Enumerations And Constructor
+        #region Public Properties
 
         /// <summary>
         /// The name of the save file in which the key-value pairs are stored.<br/>
@@ -29,37 +29,54 @@ namespace Enfity.SaveAndLoad
             ? $"{Application.persistentDataPath}/{defaultSaveFileName}"
             : defaultSaveFileName;
 
+        #endregion
+
+
+        #region Private Fields
+
         /// <summary>
         /// The separator that separates the data in the key-value pairs in the save file.
         /// </summary>
         private static readonly string separator;
 
         /// <summary>
+        /// String interpretations of data types enumeration.
+        /// </summary>
+        private static readonly List<string> dataTypesNames;
+
+        /// <summary>
+        /// Invalid chars for save file name.
+        /// </summary>
+        private static readonly List<char> invalidFileNameChars;
+
+        /// <summary>
         /// The default save file name.
         /// </summary>
         private const string defaultSaveFileName = "InternalParams.enfity";
 
-        /// <summary>
-        /// Contains the data types for private methods parameters.
-        /// </summary>
-        private enum DataTypes
-        {
-            String,
-            Int,
-            Float,
-            Bool,
-            Vector3
-        }
+        #endregion
+
+
+        #region Static Constructor
 
         static InternalParams()
         {
             separator = $"~{char.ConvertFromUtf32(0x001F)}~";
+            dataTypesNames = new List<string>()
+            {
+                DataTypes.String.ToString(),
+                DataTypes.Int.ToString(),
+                DataTypes.Float.ToString(),
+                DataTypes.Bool.ToString(),
+                DataTypes.Vector3.ToString(),
+            };
+            invalidFileNameChars = new List<char>() { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
         }
 
         #endregion
 
 
-        #region String Methods
+        #region Public String Methods
 
         /// <summary>
         /// Sets a string value identified by the given key.
@@ -106,7 +123,7 @@ namespace Enfity.SaveAndLoad
         #endregion
 
 
-        #region Int Methods
+        #region Public Int Methods
 
         /// <summary>
         /// Sets an integer value identified by the given key.
@@ -153,7 +170,7 @@ namespace Enfity.SaveAndLoad
         #endregion
 
 
-        #region Float Methods
+        #region Public Float Methods
 
         /// <summary>
         /// Sets a float value identified by the given key.
@@ -200,7 +217,7 @@ namespace Enfity.SaveAndLoad
         #endregion
 
 
-        #region Bool Methods
+        #region Public Bool Methods
 
         /// <summary>
         /// Sets a boolean value identified by the given key.
@@ -247,7 +264,7 @@ namespace Enfity.SaveAndLoad
         #endregion
 
 
-        #region Vector3 Methods
+        #region Public Vector3 Methods
 
         /// <summary>
         /// Sets a Vector3 value identified by the given key.
@@ -294,7 +311,7 @@ namespace Enfity.SaveAndLoad
         #endregion
 
 
-        #region Public Methods
+        #region Public General Methods
 
         /// <summary>
         /// Deletes all existing keys and values.<br/>
@@ -450,13 +467,15 @@ namespace Enfity.SaveAndLoad
 
             foreach (string line in lines)
             {
-                if (!IsPairCorrupted(line.Split(separator)))
-                {
-                    string key = line.Split(separator)[1];
-                    object value = null;
-                    DataTypes type = (DataTypes)Enum.Parse(typeof(DataTypes), line.Split(separator)[3]);
+                string[] splittedLine = line.Split(separator);
 
-                    TryGetValue(key, ref value, type, line.Split(separator)[2]);
+                if (!IsPairCorrupted(splittedLine))
+                {
+                    string key = splittedLine[1];
+                    object value = null;
+                    DataTypes type = (DataTypes)Enum.Parse(typeof(DataTypes), splittedLine[3]);
+
+                    TryGetValue(key, ref value, type, splittedLine[2]);
                     keyValuePairs.Add(new KeyValuePair<string, object>(key, value));
                 }
             }
@@ -845,16 +864,7 @@ namespace Enfity.SaveAndLoad
         /// </summary>
         private static bool IsPairCorrupted(string[] pair)
         {
-            List<string> types = new List<string>()
-            {
-                DataTypes.String.ToString(),
-                DataTypes.Int.ToString(),
-                DataTypes.Float.ToString(),
-                DataTypes.Bool.ToString(),
-                DataTypes.Vector3.ToString(),
-            };
-
-            if ((pair.Length == 5) && types.Contains(pair[3]))
+            if ((pair.Length == 5) && dataTypesNames.Contains(pair[3]))
                 return false;
             else
                 return true;
@@ -870,11 +880,9 @@ namespace Enfity.SaveAndLoad
 
             if ((saveFileName != null) && (saveFileName != "") && (saveFileName != " "))
             {
-                List<char> invalidChars = new List<char>() { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
-
-                for (int i = 0; i < invalidChars.Count; i++)
+                for (int i = 0; i < invalidFileNameChars.Count; i++)
                 {
-                    if (saveFileName.Contains(invalidChars[i]))
+                    if (saveFileName.Contains(invalidFileNameChars[i]))
                         return false;
                 }
 
@@ -889,7 +897,24 @@ namespace Enfity.SaveAndLoad
         #endregion
 
 
-        #region Utilities
+        #region Private Enumerations
+
+        /// <summary>
+        /// Contains the data types for private methods parameters.
+        /// </summary>
+        private enum DataTypes
+        {
+            String,
+            Int,
+            Float,
+            Bool,
+            Vector3
+        }
+
+        #endregion
+
+
+        #region Private Utilities
 
         /// <summary>
         /// Provides escape and recovery capabilities for control sequences and Unicode characters.
